@@ -45,14 +45,6 @@ public class UsuarioService {
         }
     }
 
-    public List<Usuario> buscarTodos() throws Exception {
-        try {
-            return usuarioDAO.buscarTodos();
-        } catch (SQLException | IOException e) {
-            throw new Exception("Erro ao buscar usuários: " + e.getMessage(), e);
-        }
-    }
-
     public Usuario login(String nomeUsuario, String senha) throws Exception {
         try {
             Usuario usuario = usuarioDAO.autenticar(nomeUsuario, senha);

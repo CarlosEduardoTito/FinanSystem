@@ -2,6 +2,9 @@ package br.edu.utfpr.oo2.FinanSystem.gui;
 
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -11,9 +14,9 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
 
 import br.edu.utfpr.oo2.FinanSystem.entities.Usuario;
 import br.edu.utfpr.oo2.FinanSystem.service.UsuarioService;
@@ -25,14 +28,13 @@ public class JanelaCadastroUsuario extends JDialog {
     private JComboBox<String> cbSexo;
     private JTextField txtNomeUsuario;
     private JPasswordField txtSenha;
-
+    private MaskFormatter mascaraData;
     private JButton btnSalvar;
     private JButton btnCancelar;
 
     private UsuarioService usuarioService = new UsuarioService();
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public JanelaCadastroUsuario(Frame owner, boolean modal) {
+    public JanelaCadastroUsuario(Frame owner, boolean modal) throws ParseException {
         super(owner, modal);
         setTitle("Cadastro de Usuário");
         setSize(400, 250);
@@ -42,9 +44,9 @@ public class JanelaCadastroUsuario extends JDialog {
         adicionarEventos();
     }
 
-    private void iniciarComponentes() {
+    private void iniciarComponentes() throws ParseException {
         txtNomeCompleto = new JTextField(25);
-        txtDataNascimento = new JFormattedTextField("##/##/####");
+        //txtDataNascimento = new JFormattedTextField("##/##/####");
         cbSexo = new JComboBox<>(new String[]{"M", "F", "Outro"});
         txtNomeUsuario = new JTextField(15);
         txtSenha = new JPasswordField(15);
@@ -52,6 +54,14 @@ public class JanelaCadastroUsuario extends JDialog {
         btnSalvar = new JButton("Salvar");
         btnCancelar = new JButton("Cancelar");
 
+        MaskFormatter mask = new MaskFormatter("##/##/####");
+        mask.setPlaceholderCharacter('_');
+        mask.setValueContainsLiteralCharacters(false);
+        mask.setAllowsInvalid(false);
+        mask.setOverwriteMode(true);
+
+        txtDataNascimento = new JFormattedTextField(mask);
+        
         setLayout(new GridLayout(6, 2, 5, 5));
 
         add(new JLabel("Nome completo:"));
@@ -68,11 +78,20 @@ public class JanelaCadastroUsuario extends JDialog {
 
         add(new JLabel("Senha:"));
         add(txtSenha);
-
+        
+        txtSenha.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    salvarUsuario();
+                }
+            }
+        });
+        
         add(btnSalvar);
         add(btnCancelar);
     }
-
+    
     private void adicionarEventos() {
         btnSalvar.addActionListener(e -> salvarUsuario());
         btnCancelar.addActionListener(e -> dispose());
@@ -83,7 +102,7 @@ public class JanelaCadastroUsuario extends JDialog {
             String nomeCompleto = txtNomeCompleto.getText().trim();
             LocalDate dataNasc = LocalDate.parse(
                     txtDataNascimento.getText().trim(),
-                    formatter
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy")
             );
             String sexo = (String) cbSexo.getSelectedItem();
             String nomeUsuario = txtNomeUsuario.getText().trim();

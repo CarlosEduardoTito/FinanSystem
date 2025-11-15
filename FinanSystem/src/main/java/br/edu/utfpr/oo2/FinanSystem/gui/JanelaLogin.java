@@ -1,6 +1,9 @@
 package br.edu.utfpr.oo2.FinanSystem.gui;
 
 import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.text.ParseException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,7 +26,7 @@ public class JanelaLogin extends JFrame {
     private UsuarioService usuarioService = new UsuarioService();
 
     public JanelaLogin() {
-        setTitle("Login - Sistema");
+        setTitle("FinanSystem - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(350, 200);
         setLocationRelativeTo(null);
@@ -47,13 +50,30 @@ public class JanelaLogin extends JFrame {
         add(txtNomeUsuario);
         add(lblSenha);
         add(txtSenha);
+        
+        txtSenha.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    fazerLogin();
+                }
+            }
+        });
+        
         add(btnEntrar);
         add(btnCriarConta);
     }
 
     private void adicionarEventos() {
         btnEntrar.addActionListener(e -> fazerLogin());
-        btnCriarConta.addActionListener(e -> abrirCadastro());
+        btnCriarConta.addActionListener(e -> {
+			try {
+				abrirCadastro();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
     }
 
     private void fazerLogin() {
@@ -73,7 +93,7 @@ public class JanelaLogin extends JFrame {
         }
     }
 
-    private void abrirCadastro() {
+    private void abrirCadastro() throws ParseException {
         JanelaCadastroUsuario cadastro = new JanelaCadastroUsuario(this, true);
         cadastro.setVisible(true);
     }

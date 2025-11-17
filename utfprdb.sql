@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 15/11/2025 às 20:42
+-- Tempo de geração: 17/11/2025 às 16:36
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -20,6 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `utfprdb`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `meta_financeira`
+--
+
+CREATE TABLE `meta_financeira` (
+  `id` int(11) NOT NULL,
+  `usuarioId` int(11) NOT NULL,
+  `descricao` varchar(255) NOT NULL,
+  `valorMensal` decimal(10,2) NOT NULL,
+  `tipoMeta` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -41,6 +55,12 @@ CREATE TABLE `usuario` (
 --
 
 --
+-- Índices de tabela `meta_financeira`
+--
+ALTER TABLE `meta_financeira`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Índices de tabela `usuario`
 --
 ALTER TABLE `usuario`
@@ -50,6 +70,12 @@ ALTER TABLE `usuario`
 --
 -- AUTO_INCREMENT para tabelas despejadas
 --
+
+--
+-- AUTO_INCREMENT de tabela `meta_financeira`
+--
+ALTER TABLE `meta_financeira`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `usuario`

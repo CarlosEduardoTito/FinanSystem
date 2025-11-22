@@ -1,28 +1,23 @@
 package br.edu.utfpr.oo2.FinanSystem.entities;
 
 public class Categoria {
-
-
-    private int id;
+    private Integer id;
     private String nome;
     private String tipo;
 
-    public Categoria() {
+    public Categoria() {}
 
-    }
-
-    public Categoria(int id, String nome, String tipo) {
-        super();
+    public Categoria(Integer id, String nome, String tipo) {
         this.id = id;
         this.nome = nome;
         this.tipo = tipo;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -40,5 +35,10 @@ public class Categoria {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
     }
 }

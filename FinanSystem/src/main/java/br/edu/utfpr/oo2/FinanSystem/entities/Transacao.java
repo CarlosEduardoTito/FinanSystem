@@ -5,84 +5,52 @@ import java.time.LocalDate;
 public class Transacao {
 
 
-    private int id;
-    private int contaId;
-    private int categoriaId;
-    private double valor;
-    private LocalDate data;
-    private String tipo;
+    private Integer id;
+    private Integer contaId;
+    private Integer categoriaId;
     private String descricao;
+    private Double valor;
+    private LocalDate data;
 
-    public Transacao() {
+    public Transacao() {}
 
-    }
-
-    public Transacao(int id, int contaId, int categoriaId, double valor, LocalDate data, String tipo,
-                     String descricao) {
-        super();
+    public Transacao(Integer id, Integer contaId, Integer categoriaId, String descricao, Double valor, LocalDate data) {
         this.id = id;
         this.contaId = contaId;
         this.categoriaId = categoriaId;
+        this.descricao = descricao;
         this.valor = valor;
         this.data = data;
-        this.tipo = tipo;
-        this.descricao = descricao;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getContaId() {
-        return contaId;
-    }
-
-    public void setContaId(int contaId) {
+    public Transacao(Integer contaId, Integer categoriaId, String descricao, Double valor, LocalDate data) {
         this.contaId = contaId;
-    }
-
-    public int getCategoriaId() {
-        return categoriaId;
-    }
-
-    public void setCategoriaId(int categoriaId) {
         this.categoriaId = categoriaId;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
+        this.descricao = descricao;
         this.valor = valor;
-    }
-
-    public LocalDate getData() {
-        return data;
-    }
-
-    public void setData(LocalDate data) {
         this.data = data;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
+    public Integer getContaId() { return contaId; }
+    public void setContaId(Integer contaId) { this.contaId = contaId; }
 
-    public String getDescricao() {
-        return descricao;
-    }
+    public Integer getCategoriaId() { return categoriaId; }
+    public void setCategoriaId(Integer categoriaId) { this.categoriaId = categoriaId; }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
+    public Double getValor() { return valor; }
+    public void setValor(Double valor) { this.valor = valor; }
+
+    public LocalDate getData() { return data; }
+    public void setData(LocalDate data) { this.data = data; }
+
+    @Override
+    public String toString() {
+        return data + " | " + descricao + " | " + valor;
+    }
 }

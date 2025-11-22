@@ -10,39 +10,58 @@ import java.sql.Connection;
 
 public class ContaService {
 
-    public void cadastrarConta(Conta conta) throws SQLException, IOException, Exception {
-        Connection conn = BancoDados.conectar();
-        ContaDAO contaDAO = new ContaDAO(conn);
-
-        Conta existente = contaDAO.buscarPorNumero(conta.getNumeroConta());
-        if (existente != null) {
-            throw new Exception("Conta já cadastrada com esse número.");
+    public void cadastrarConta(Conta conta) throws Exception {
+        validar(conta);
+        try (Connection conn = BancoDados.conectar()) {
+            ContaDAO dao = new ContaDAO(conn);
+            if (dao.buscarPorNumero(conta.getNumeroConta()) != null) {
+                throw new Exception("Já existe uma conta com esse número.");
+            }
+            dao.cadastrar(conta);
         }
-
-        contaDAO.cadastrar(conta);
     }
 
-    public void atualizarConta(Conta conta) throws SQLException, IOException {
-        Connection conn = BancoDados.conectar();
-        ContaDAO contaDAO = new ContaDAO(conn);
-        contaDAO.atualizar(conta);
+    public void atualizarConta(Conta conta) throws Exception {
+        validar(conta);
+        try (Connection conn = BancoDados.conectar()) {
+            ContaDAO dao = new ContaDAO(conn);
+            dao.atualizar(conta);
+        }
     }
 
     public void excluirConta(Integer id) throws SQLException, IOException {
-        Connection conn = BancoDados.conectar();
-        ContaDAO contaDAO = new ContaDAO(conn);
-        contaDAO.excluir(id);
+        try (Connection conn = BancoDados.conectar()) {
+            ContaDAO dao = new ContaDAO(conn);
+            dao.excluir(id);
+        }
     }
 
     public Conta buscarPorId(Integer id) throws SQLException, IOException {
-        Connection conn = BancoDados.conectar();
-        ContaDAO contaDAO = new ContaDAO(conn);
-        return contaDAO.buscarPorId(id);
+        try (Connection conn = BancoDados.conectar()) {
+            ContaDAO dao = new ContaDAO(conn);
+            return dao.buscarPorId(id);
+        }
     }
 
     public List<Conta> listarContas() throws SQLException, IOException {
-        Connection conn = BancoDados.conectar();
-        ContaDAO contaDAO = new ContaDAO(conn);
-        return contaDAO.buscarTodos();
+        try (Connection conn = BancoDados.conectar()) {
+            ContaDAO dao = new ContaDAO(conn);
+            return dao.buscarTodos();
+        }
+    }
+
+    private void validar(Conta c) throws Exception {
+        if (c.getNomeBanco() == null || c.getNomeBanco().isBlank())
+            throw new Exception("O nome do banco é obrigatório.");
+        if (c.getAgencia() == null || c.getAgencia().isBlank())
+            throw new Exception("A agência é obrigatória.");
+        if (c.getNumeroConta() == null)
+            throw new Exception("Número da conta é obrigatório.");
+        if (c.getSaldoInicial() == null)
+            throw new Exception("Saldo inicial é obrigatório.");
+        if (c.getSaldoInicial() < 0)
+            throw new Exception("Saldo inicial não pode ser negativo.");
+        if (c.getTipoConta() == null || c.getTipoConta().isBlank())
+            throw new Exception("O tipo da conta é obrigatório.");
     }
 }

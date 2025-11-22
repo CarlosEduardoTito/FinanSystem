@@ -7,124 +7,98 @@ import br.edu.utfpr.oo2.FinanSystem.entities.Categoria;
 
 public class CategoriaDAO implements DAO<Categoria, Integer> {
 
-    private Connection conn;
+    private final Connection conn;
 
     public CategoriaDAO(Connection conn) {
         this.conn = conn;
     }
 
-    @Override
     public int cadastrar(Categoria categoria) throws SQLException {
-        PreparedStatement st = null;
-        try {
-            st = conn.prepareStatement(
-                    "INSERT INTO categoria (nome, tipo) VALUES (?, ?)"
-            );
+        String sql = "INSERT INTO categoria (nome, tipo) VALUES (?, ?)";
+
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, categoria.getNome());
             st.setString(2, categoria.getTipo());
             return st.executeUpdate();
-        } finally {
-            BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
         }
     }
 
-    @Override
+
     public int atualizar(Categoria categoria) throws SQLException {
-        PreparedStatement st = null;
-        try {
-            st = conn.prepareStatement(
-                    "UPDATE categoria SET nome=?, tipo=? WHERE id=?"
-            );
+        String sql = "UPDATE categoria SET nome=?, tipo=? WHERE id=?";
+
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, categoria.getNome());
             st.setString(2, categoria.getTipo());
             st.setInt(3, categoria.getId());
             return st.executeUpdate();
-        } finally {
-            BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
         }
     }
 
-    @Override
+
     public int excluir(Integer id) throws SQLException {
-        PreparedStatement st = null;
-        try {
-            st = conn.prepareStatement("DELETE FROM categoria WHERE id=?");
+        String sql = "DELETE FROM categoria WHERE id=?";
+
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, id);
             return st.executeUpdate();
-        } finally {
-            BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
         }
     }
 
-    @Override
+
     public Categoria buscarPorId(Integer id) throws SQLException {
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            st = conn.prepareStatement("SELECT * FROM categoria WHERE id=?");
+        String sql = "SELECT * FROM categoria WHERE id=?";
+
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, id);
-            rs = st.executeQuery();
-            if (rs.next()) {
-                Categoria c = new Categoria();
-                c.setId(rs.getInt("id"));
-                c.setNome(rs.getString("nome"));
-                c.setTipo(rs.getString("tipo"));
-                return c;
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    return mapearCategoria(rs);
+                }
             }
-            return null;
-        } finally {
-            BancoDados.finalizarStatement(st);
-            BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
         }
+        return null;
     }
 
-    @Override
-    public List<Categoria> buscarTodos() throws SQLException {
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            st = conn.prepareStatement("SELECT * FROM categoria ORDER BY nome");
-            rs = st.executeQuery();
-            List<Categoria> lista = new ArrayList<>();
-            while (rs.next()) {
-                Categoria c = new Categoria();
-                c.setId(rs.getInt("id"));
-                c.setNome(rs.getString("nome"));
-                c.setTipo(rs.getString("tipo"));
-                lista.add(c);
-            }
-            return lista;
-        } finally {
-            BancoDados.finalizarStatement(st);
-            BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
-        }
-    }
 
     public Categoria buscarPorNome(String nome) throws SQLException {
-        String sql = "SELECT * FROM categoria WHERE nome = ?";
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            st = conn.prepareStatement(sql);
+        String sql = "SELECT * FROM categoria WHERE nome=?";
+
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, nome);
-            rs = st.executeQuery();
-            if (rs.next()) {
-                Categoria c = new Categoria();
-                c.setId(rs.getInt("id"));
-                c.setNome(rs.getString("nome"));
-                c.setTipo(rs.getString("tipo"));
-                return c;
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    return mapearCategoria(rs);
+                }
             }
-            return null;
-        } finally {
-            BancoDados.finalizarResultSet(rs);
-            BancoDados.finalizarStatement(st);
         }
+        return null;
     }
 
+    public List<Categoria> buscarTodos() throws SQLException {
+        String sql = "SELECT * FROM categoria ORDER BY nome";
+
+        List<Categoria> lista = new ArrayList<>();
+
+        try (PreparedStatement st = conn.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(mapearCategoria(rs));
+            }
+        }
+
+        return lista;
+    }
+
+
+    private Categoria mapearCategoria(ResultSet rs) throws SQLException {
+        Categoria c = new Categoria();
+        c.setId(rs.getInt("id"));
+        c.setNome(rs.getString("nome"));
+        c.setTipo(rs.getString("tipo"));
+        return c;
+    }
 }

@@ -75,13 +75,8 @@ public class JanelaPlanejamento extends JDialog {
 		panelForm.add(cbTipo);
 		
 		JButton btnSalvar = new JButton("Salvar Meta");
-		btnSalvar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				salvarMeta();
-				
-			}
-		});
+		btnSalvar.addActionListener(e -> salvarMeta());
+
 		btnSalvar.setBackground(new Color(0, 128, 0));
 		btnSalvar.setForeground(Color.WHITE);
 		
@@ -104,8 +99,19 @@ public class JanelaPlanejamento extends JDialog {
 		panelCentro.add(lblTituloTabela,BorderLayout.NORTH);
 		panelCentro.add(scrollPane, BorderLayout.CENTER);
 		
-		getContentPane().add(panelCentro, BorderLayout.CENTER);
+		add(panelCentro, BorderLayout.CENTER);
 		
+		JPanel panelSul = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JButton btnExcluir = new JButton("Excluir Selecionada");
+		btnExcluir.setBackground(Color.RED);
+		btnExcluir.addActionListener(e -> excluirMeta());
+		
+		JButton btnFechar = new JButton("Fechar");
+		btnFechar.addActionListener(e -> dispose());
+		
+		panelSul.add(btnExcluir);
+		panelSul.add(btnFechar);
+		add(panelSul, BorderLayout.SOUTH);
 		
 	}
 	
@@ -165,6 +171,37 @@ public class JanelaPlanejamento extends JDialog {
 		} catch (Exception ex) {
 			
 			JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+	}
+	
+	private void excluirMeta() {
+		
+		int linhaSelecionada = tabelaMetas.getSelectedRow();
+		if(linhaSelecionada == -1) {
+			
+			JOptionPane.showMessageDialog(this, "Selecione uma meta na tabela para excluir.");
+			return;
+			
+		}
+		
+		Integer id = (Integer) tabelaMetas.getValueAt(linhaSelecionada, 0);
+		
+		int confirm = JOptionPane.showConfirmDialog(this, "tem certeza que deseja excluir esta meta?", "Confirmar exclusão.", JOptionPane.YES_NO_OPTION);
+		
+		if(confirm == JOptionPane.YES_OPTION) {
+			
+			try {
+				
+				service.excluir(id);
+				carregarTabela();
+				
+			} catch(Exception ex) {
+				
+				JOptionPane.showMessageDialog(this, "Erro ao excluir: " + ex.getMessage());
+				
+			}
 			
 		}
 		

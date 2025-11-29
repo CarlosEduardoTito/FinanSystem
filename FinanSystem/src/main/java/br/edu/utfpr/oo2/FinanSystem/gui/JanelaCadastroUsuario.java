@@ -199,11 +199,22 @@ public class JanelaCadastroUsuario extends JDialog {
                     senha
             );
 
-            usuarioService.cadastrar(usuario);
-
-            JOptionPane.showMessageDialog(this,
-                    "Usuário cadastrado com sucesso!");
-            dispose();
+            // Cadastro com tela de carregamento usando thread
+            TarefaComCarregamento.executar(
+                    (Frame) getOwner(),
+                    () -> usuarioService.cadastrar(usuario),
+                    () -> {
+                        JOptionPane.showMessageDialog(this,
+                                "Usuário cadastrado com sucesso!");
+                        dispose();
+                    },
+                    ex -> {
+                        JOptionPane.showMessageDialog(this,
+                                ex.getMessage(),
+                                "Erro ao cadastrar usuário",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+            );
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,

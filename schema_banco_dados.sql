@@ -6,9 +6,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
-CREATE DATABASE IF NOT EXISTS `utfprdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `utfprdb`;
-
 DROP TABLE IF EXISTS `transacao`;
 DROP TABLE IF EXISTS `meta_financeira`;
 DROP TABLE IF EXISTS `categoria`;

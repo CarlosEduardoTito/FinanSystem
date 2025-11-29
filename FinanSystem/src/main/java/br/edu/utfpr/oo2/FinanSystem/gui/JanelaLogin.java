@@ -1,6 +1,5 @@
 package br.edu.utfpr.oo2.FinanSystem.gui;
 
-import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
@@ -124,17 +123,23 @@ public class JanelaLogin extends JFrame {
             return;
         }
 
-        try {
-            Usuario usuario = usuarioService.login(nomeUsuario, senha);
-            JOptionPane.showMessageDialog(this,
-                    "Bem-vindo, " + usuario.getNomeCompleto() + "!");
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(),
-                    "Erro de login",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+        // Login com tela de carregamento usando thread
+        TarefaComCarregamento.executarComRetorno(
+                this,
+                () -> usuarioService.login(nomeUsuario, senha),
+                usuario -> {
+                    JOptionPane.showMessageDialog(this,
+                            "Bem-vindo, " + usuario.getNomeCompleto() + "!");
+                    // Aqui você pode abrir a próxima janela, por exemplo:
+                    // abrirTelaPrincipal(usuario);
+                },
+                ex -> {
+                    JOptionPane.showMessageDialog(this,
+                            ex.getMessage(),
+                            "Erro de login",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+        );
     }
 
     private void abrirCadastro() throws ParseException {

@@ -22,7 +22,7 @@ public class JanelaConta extends JDialog {
 
     private void init() {
         setTitle("FinanSystem - Contas");
-        setSize(700, 400);
+        setSize(750, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -35,15 +35,19 @@ public class JanelaConta extends JDialog {
         tabela = new JTable(modelo);
         JScrollPane scroll = new JScrollPane(tabela);
 
-        JPanel botoes = new JPanel(new GridLayout(1, 4, 10, 0));
+        // Painel de botões com 5 botões agora
+        JPanel botoes = new JPanel(new GridLayout(1, 5, 10, 0));
+
         JButton add = new JButton("Adicionar");
         JButton edit = new JButton("Editar");
         JButton del = new JButton("Excluir");
+        JButton transf = new JButton("Transferir");
         JButton fechar = new JButton("Fechar");
 
         botoes.add(add);
         botoes.add(edit);
         botoes.add(del);
+        botoes.add(transf);
         botoes.add(fechar);
 
         add(scroll, BorderLayout.CENTER);
@@ -52,6 +56,7 @@ public class JanelaConta extends JDialog {
         add.addActionListener(e -> adicionar());
         edit.addActionListener(e -> editar());
         del.addActionListener(e -> excluir());
+        transf.addActionListener(e -> transferir());
         fechar.addActionListener(e -> dispose());
     }
 
@@ -111,12 +116,10 @@ public class JanelaConta extends JDialog {
         c.setSaldoInicial(Double.parseDouble(saldo.getText().trim()));
         c.setTipoConta(tipo.getSelectedItem().toString());
 
-
         c.setUserId(1);
 
         return c;
     }
-
 
     private Integer getIdSelecionado() {
         int linha = tabela.getSelectedRow();
@@ -127,7 +130,6 @@ public class JanelaConta extends JDialog {
     private void adicionar() {
         Conta nova = coletarDados(null);
         if (nova == null) return;
-
 
         TarefaComCarregamento.executar(
                 (Frame) getOwner(),
@@ -146,14 +148,12 @@ public class JanelaConta extends JDialog {
             return;
         }
 
-
         TarefaComCarregamento.executarComRetorno(
                 (Frame) getOwner(),
                 () -> contaService.buscarPorId(id),
                 conta -> {
                     Conta atualizada = coletarDados(conta);
                     if (atualizada == null) return;
-
 
                     TarefaComCarregamento.executar(
                             (Frame) getOwner(),
@@ -185,6 +185,38 @@ public class JanelaConta extends JDialog {
                 () -> contaService.excluirConta(id),
                 () -> {
                     JOptionPane.showMessageDialog(this, "Conta excluída com sucesso!");
+                    carregarTabela();
+                }
+        );
+    }
+
+
+    private void transferir() {
+
+        JTextField origem = new JTextField();
+        JTextField destino = new JTextField();
+        JTextField valor = new JTextField();
+
+        JPanel painel = new JPanel(new GridLayout(3, 2, 5, 5));
+        painel.add(new JLabel("ID Conta Origem:"));
+        painel.add(origem);
+        painel.add(new JLabel("ID Conta Destino:"));
+        painel.add(destino);
+        painel.add(new JLabel("Valor:"));
+        painel.add(valor);
+
+        int r = JOptionPane.showConfirmDialog(this, painel, "Transferência", JOptionPane.OK_CANCEL_OPTION);
+        if (r != JOptionPane.OK_OPTION) return;
+
+        int idOrigem = Integer.parseInt(origem.getText().trim());
+        int idDestino = Integer.parseInt(destino.getText().trim());
+        double v = Double.parseDouble(valor.getText().trim());
+
+        TarefaComCarregamento.executar(
+                (Frame) getOwner(),
+                () -> contaService.transferir(idOrigem, idDestino, v),
+                () -> {
+                    JOptionPane.showMessageDialog(this, "Transferência realizada com sucesso!");
                     carregarTabela();
                 }
         );

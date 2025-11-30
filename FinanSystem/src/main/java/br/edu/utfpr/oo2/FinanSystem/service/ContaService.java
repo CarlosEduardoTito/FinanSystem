@@ -71,4 +71,38 @@ public class ContaService {
         if (c.getTipoConta() == null || c.getTipoConta().isBlank())
             throw new Exception("O tipo da conta é obrigatório.");
     }
+
+
+    public void transferir(int idOrigem, int idDestino, double valor) throws Exception {
+
+        if (idOrigem == idDestino)
+            throw new Exception("A conta de origem e destino não podem ser iguais.");
+
+        if (valor <= 0)
+            throw new Exception("O valor da transferência deve ser maior que zero.");
+
+        Connection conn = BancoDados.conectar();
+        ContaDAO dao = new ContaDAO(conn);
+
+        Conta origem = dao.buscarPorId(idOrigem);
+        Conta destino = dao.buscarPorId(idDestino);
+
+        if (origem == null)
+            throw new Exception("Conta de origem não encontrada.");
+
+        if (destino == null)
+            throw new Exception("Conta de destino não encontrada.");
+
+        if (origem.getSaldoInicial() < valor)
+            throw new Exception("Saldo insuficiente na conta de origem.");
+
+
+        origem.setSaldoInicial(origem.getSaldoInicial() - valor);
+        destino.setSaldoInicial(destino.getSaldoInicial() + valor);
+
+
+        dao.atualizar(origem);
+        dao.atualizar(destino);
+    }
+
 }

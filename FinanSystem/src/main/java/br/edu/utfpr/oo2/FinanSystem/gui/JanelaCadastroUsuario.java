@@ -199,7 +199,6 @@ public class JanelaCadastroUsuario extends JDialog {
                     senha
             );
 
-            // Cadastro com tela de carregamento usando thread
             TarefaComCarregamento.executar(
                     (Frame) getOwner(),
                     () -> usuarioService.cadastrar(usuario),

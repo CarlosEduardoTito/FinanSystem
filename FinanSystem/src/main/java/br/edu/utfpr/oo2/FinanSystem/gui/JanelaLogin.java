@@ -123,7 +123,6 @@ public class JanelaLogin extends JFrame {
             return;
         }
 
-        // Login com tela de carregamento usando thread
         TarefaComCarregamento.executarComRetorno(
                 this,
                 () -> usuarioService.login(nomeUsuario, senha),

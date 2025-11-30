@@ -39,6 +39,25 @@ public class MetaFinanceiraService {
 		
 	}
 	
+	public void atualizar(MetaFinanceira meta) throws SQLException, IOException, Exception {
+        if(meta.getValorMensal() <= 0) {
+            throw new Exception("O valor mensal deve ser maior que zero.");
+        }
+        if (meta.getDescricao() == null || meta.getDescricao().trim().isEmpty()) {
+            throw new Exception("A descrição é obrigatória.");
+        }
+        
+        Connection conn = BancoDados.conectar();
+        try {
+            MetaFinanceiraDAO dao = new MetaFinanceiraDAO(conn);
+            dao.atualizar(meta);
+        } finally {
+            
+        	BancoDados.desconectar();
+        	
+        }
+    }
+	
 	public List<MetaFinanceira> listarPorUsuario(Integer usuarioId) throws SQLException, IOException {
 		
 		Connection conn = BancoDados.conectar();

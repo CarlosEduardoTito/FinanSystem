@@ -99,7 +99,7 @@ public class TelaInicialFinanceiro extends JFrame {
             janela.setVisible(true);
         });
         btnRelatorios.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        btnRelatorios.setBounds(44, 160, 110, 25); // Ajuste o posicionamento conforme necessário
+        btnRelatorios.setBounds(44, 160, 110, 25);
         contentPane.add(btnRelatorios);
     }
 }

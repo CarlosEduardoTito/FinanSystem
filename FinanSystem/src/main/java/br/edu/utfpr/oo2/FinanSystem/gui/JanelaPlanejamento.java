@@ -214,26 +214,7 @@ public class JanelaPlanejamento extends JDialog {
 		
 	}
 	
-    // MÉTODO MAIN APENAS PARA TESTES
-    public static void main(String[] args) {
-        // Cria um frame "falso" para ser o dono da janela
-        JFrame frameTeste = new JFrame();
-        frameTeste.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // Simula o ID do usuário logado (ex: usuário 1)
-        // Certifique-se de que existe um usuário com ID 1 no seu banco para testar!
-        Integer idUsuarioTeste = 1; 
-
-        try {
-            // Abre a janela de planejamento
-            JanelaPlanejamento janela = new JanelaPlanejamento(frameTeste, idUsuarioTeste);
-            janela.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        System.exit(0);
-    }
+    
 
 
 }

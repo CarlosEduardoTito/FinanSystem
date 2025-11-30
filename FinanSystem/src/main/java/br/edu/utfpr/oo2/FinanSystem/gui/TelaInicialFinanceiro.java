@@ -92,5 +92,14 @@ public class TelaInicialFinanceiro extends JFrame {
         CategoriaButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
         CategoriaButton.setBounds(285, 120, 110, 25);
         contentPane.add(CategoriaButton);
+        
+        JButton btnRelatorios = new JButton("Relatórios");
+        btnRelatorios.addActionListener(e -> {
+            JanelaRelatorios janela = new JanelaRelatorios(this);
+            janela.setVisible(true);
+        });
+        btnRelatorios.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        btnRelatorios.setBounds(44, 160, 110, 25);
+        contentPane.add(btnRelatorios);
     }
 }

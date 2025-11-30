@@ -40,6 +40,20 @@ public class JanelaPlanejamento extends JDialog {
 
     public JanelaPlanejamento(JFrame owner, Integer idUsuario) {
         super(owner, "Planejamento Financeiro", true);
+        
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+
+            javax.swing.SwingUtilities.updateComponentTreeUI(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         this.idUsuarioLogado = idUsuario;
         
         setSize(650, 500);
@@ -233,24 +247,4 @@ public class JanelaPlanejamento extends JDialog {
         idMetaEmEdicao = null;
     }
     
-    public static void main(String[] args) {
-        JFrame frameTeste = new JFrame();
-        Integer idUsuarioTeste = 1;
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-            
-            JanelaPlanejamento janela = new JanelaPlanejamento(frameTeste, idUsuarioTeste);
-            janela.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            janela.setVisible(true);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

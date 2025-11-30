@@ -29,6 +29,20 @@ public class JanelaRelatorios extends JDialog {
 
     public JanelaRelatorios(Frame owner) {
         super(owner, "Relatórios e Exportação", true);
+        
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+            
+            javax.swing.SwingUtilities.updateComponentTreeUI(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         setSize(800, 500);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout());

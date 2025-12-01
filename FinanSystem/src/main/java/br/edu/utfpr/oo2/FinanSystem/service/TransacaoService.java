@@ -19,133 +19,114 @@ public class TransacaoService {
 
     public void cadastrarTransacao(Transacao t) throws Exception {
         validarBasico(t);
-        try (Connection conn = BancoDados.conectar()) {
-            try {
-                conn.setAutoCommit(false);
-                TransacaoDAO transDao = new TransacaoDAO(conn);
-                ContaDAO contaDao = new ContaDAO(conn);
-                CategoriaDAO catDao = new CategoriaDAO(conn);
+        Connection conn = BancoDados.conectar();
+        try {
+            conn.setAutoCommit(false);
 
-                Conta conta = contaDao.buscarPorId(t.getContaId());
-                if (conta == null) throw new Exception("Conta não encontrada.");
+            TransacaoDAO transDao = new TransacaoDAO(conn);
+            ContaDAO contaDao = new ContaDAO(conn);
+            CategoriaDAO catDao = new CategoriaDAO(conn);
 
-                Categoria categoria = catDao.buscarPorId(t.getCategoriaId());
-                if (categoria == null) throw new Exception("Categoria não encontrada.");
+            Conta conta = contaDao.buscarPorId(t.getContaId());
+            if (conta == null) throw new Exception("Conta não encontrada.");
 
-                transDao.cadastrar(t);
+            Categoria categoria = catDao.buscarPorId(t.getCategoriaId());
+            if (categoria == null) throw new Exception("Categoria não encontrada.");
 
-                ajustarSaldoPorCategoria(conta, categoria, t.getValor(), contaDao);
+            transDao.cadastrar(t);
+            ajustarSaldoPorCategoria(conta, categoria, t.getValor(), contaDao);
 
-                conn.commit();
-            } catch (Exception e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            conn.commit();
+        } catch (Exception e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
         }
     }
 
     public void atualizarTransacao(Transacao t) throws Exception {
         validarBasico(t);
-        try (Connection conn = BancoDados.conectar()) {
-            try {
-                conn.setAutoCommit(false);
-                TransacaoDAO transDao = new TransacaoDAO(conn);
-                ContaDAO contaDao = new ContaDAO(conn);
-                CategoriaDAO catDao = new CategoriaDAO(conn);
+        Connection conn = BancoDados.conectar();
+        try {
+            conn.setAutoCommit(false);
 
-                Transacao existente = transDao.buscarPorId(t.getId());
-                if (existente == null) throw new Exception("Transação não encontrada.");
+            TransacaoDAO transDao = new TransacaoDAO(conn);
+            ContaDAO contaDao = new ContaDAO(conn);
+            CategoriaDAO catDao = new CategoriaDAO(conn);
 
-                Conta contaOrigem = contaDao.buscarPorId(existente.getContaId());
-                if (contaOrigem == null) throw new Exception("Conta original não encontrada.");
+            Transacao existente = transDao.buscarPorId(t.getId());
+            if (existente == null) throw new Exception("Transação não encontrada.");
 
-                Categoria categoriaOrigem = catDao.buscarPorId(existente.getCategoriaId());
-                if (categoriaOrigem == null) throw new Exception("Categoria original não encontrada.");
+            reverterEAplicar(existente, t, contaDao, catDao, transDao);
 
-                Conta contaNova = contaDao.buscarPorId(t.getContaId());
-                if (contaNova == null) throw new Exception("Conta destino não encontrada.");
-
-                Categoria categoriaNova = catDao.buscarPorId(t.getCategoriaId());
-                if (categoriaNova == null) throw new Exception("Categoria nova não encontrada.");
-
-                reverterEAplicar(existente, t, contaDao, catDao, transDao);
-
-                conn.commit();
-            } catch (Exception e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            conn.commit();
+        } catch (Exception e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
         }
     }
 
     public void excluirTransacao(Integer id) throws Exception {
-        try (Connection conn = BancoDados.conectar()) {
-            try {
-                conn.setAutoCommit(false);
-                TransacaoDAO transDao = new TransacaoDAO(conn);
-                ContaDAO contaDao = new ContaDAO(conn);
-                CategoriaDAO catDao = new CategoriaDAO(conn);
+        Connection conn = BancoDados.conectar();
+        try {
+            conn.setAutoCommit(false);
 
-                Transacao existente = transDao.buscarPorId(id);
-                if (existente == null) throw new Exception("Transação não encontrada.");
+            TransacaoDAO transDao = new TransacaoDAO(conn);
+            ContaDAO contaDao = new ContaDAO(conn);
+            CategoriaDAO catDao = new CategoriaDAO(conn);
 
-                Conta conta = contaDao.buscarPorId(existente.getContaId());
-                if (conta == null) throw new Exception("Conta não encontrada.");
+            Transacao existente = transDao.buscarPorId(id);
+            if (existente == null) throw new Exception("Transação não encontrada.");
 
-                Categoria categoria = catDao.buscarPorId(existente.getCategoriaId());
-                if (categoria == null) throw new Exception("Categoria não encontrada.");
+            Conta conta = contaDao.buscarPorId(existente.getContaId());
+            if (conta == null) throw new Exception("Conta não encontrada.");
 
-                transDao.excluir(id);
+            Categoria categoria = catDao.buscarPorId(existente.getCategoriaId());
+            if (categoria == null) throw new Exception("Categoria não encontrada.");
 
-                ajustarSaldoPorCategoria(conta, categoria, -existente.getValor(), contaDao);
+            transDao.excluir(id);
+            ajustarSaldoPorCategoria(conta, categoria, -existente.getValor(), contaDao);
 
-                conn.commit();
-            } catch (Exception e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            conn.commit();
+        } catch (Exception e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
         }
     }
 
     public Transacao buscarPorId(Integer id) throws SQLException, IOException {
-        try (Connection conn = BancoDados.conectar()) {
-            TransacaoDAO dao = new TransacaoDAO(conn);
-            return dao.buscarPorId(id);
-        }
+        Connection conn = BancoDados.conectar();
+        TransacaoDAO dao = new TransacaoDAO(conn);
+        return dao.buscarPorId(id);
     }
 
     public List<Transacao> listarTransacoes() throws SQLException, IOException {
-        try (Connection conn = BancoDados.conectar()) {
-            TransacaoDAO dao = new TransacaoDAO(conn);
-            return dao.buscarTodos();
-        }
+        Connection conn = BancoDados.conectar();
+        TransacaoDAO dao = new TransacaoDAO(conn);
+        return dao.buscarTodos();
     }
 
     public List<Transacao> listarPorConta(int contaId) throws SQLException, IOException {
-        try (Connection conn = BancoDados.conectar()) {
-            TransacaoDAO dao = new TransacaoDAO(conn);
-            return dao.buscarPorConta(contaId);
-        }
+        Connection conn = BancoDados.conectar();
+        TransacaoDAO dao = new TransacaoDAO(conn);
+        return dao.buscarPorConta(contaId);
     }
 
     public List<Transacao> listarPorCategoria(int categoriaId) throws SQLException, IOException {
-        try (Connection conn = BancoDados.conectar()) {
-            TransacaoDAO dao = new TransacaoDAO(conn);
-            return dao.buscarPorCategoria(categoriaId);
-        }
+        Connection conn = BancoDados.conectar();
+        TransacaoDAO dao = new TransacaoDAO(conn);
+        return dao.buscarPorCategoria(categoriaId);
     }
 
     public List<Transacao> listarPorPeriodo(LocalDate inicio, LocalDate fim) throws SQLException, IOException {
-        try (Connection conn = BancoDados.conectar()) {
-            TransacaoDAO dao = new TransacaoDAO(conn);
-            return dao.buscarPorPeriodo(Date.valueOf(inicio), Date.valueOf(fim));
-        }
+        Connection conn = BancoDados.conectar();
+        TransacaoDAO dao = new TransacaoDAO(conn);
+        return dao.buscarPorPeriodo(Date.valueOf(inicio), Date.valueOf(fim));
     }
 
     private void validarBasico(Transacao t) throws Exception {
@@ -165,38 +146,30 @@ public class TransacaoService {
     }
 
     private void reverterEAplicar(Transacao antiga, Transacao novaTrans, ContaDAO contaDao, CategoriaDAO catDao, TransacaoDAO transDao) throws Exception {
-        try {
-            Categoria catAntiga = catDao.buscarPorId(antiga.getCategoriaId());
-            Categoria catNova = catDao.buscarPorId(novaTrans.getCategoriaId());
-            Conta contaAntiga = contaDao.buscarPorId(antiga.getContaId());
-            Conta contaNova = contaDao.buscarPorId(novaTrans.getContaId());
-            if (catAntiga == null || catNova == null || contaAntiga == null || contaNova == null) {
-                throw new Exception("Dados para atualização inválidos.");
-            }
-            if ("Entrada".equalsIgnoreCase(catAntiga.getTipo())) {
-                contaAntiga.setSaldoInicial(contaAntiga.getSaldoInicial() - antiga.getValor());
-            } else {
-                contaAntiga.setSaldoInicial(contaAntiga.getSaldoInicial() + antiga.getValor());
-            }
-            contaDao.atualizar(contaAntiga);
-            if (contaNova.getId().equals(contaAntiga.getId()) && catNova.getTipo().equalsIgnoreCase(catAntiga.getTipo())) {
-                if ("Entrada".equalsIgnoreCase(catNova.getTipo())) {
-                    contaNova.setSaldoInicial(contaNova.getSaldoInicial() + novaTrans.getValor());
-                } else {
-                    contaNova.setSaldoInicial(contaNova.getSaldoInicial() - novaTrans.getValor());
-                }
-                contaDao.atualizar(contaNova);
-            } else {
-                if ("Entrada".equalsIgnoreCase(catNova.getTipo())) {
-                    contaNova.setSaldoInicial(contaNova.getSaldoInicial() + novaTrans.getValor());
-                } else {
-                    contaNova.setSaldoInicial(contaNova.getSaldoInicial() - novaTrans.getValor());
-                }
-                contaDao.atualizar(contaNova);
-            }
-            transDao.atualizar(novaTrans);
-        } catch (SQLException e) {
-            throw e;
+        Categoria catAntiga = catDao.buscarPorId(antiga.getCategoriaId());
+        Categoria catNova = catDao.buscarPorId(novaTrans.getCategoriaId());
+        Conta contaAntiga = contaDao.buscarPorId(antiga.getContaId());
+        Conta contaNova = contaDao.buscarPorId(novaTrans.getContaId());
+        if (catAntiga == null || catNova == null || contaAntiga == null || contaNova == null) {
+            throw new Exception("Dados para atualização inválidos.");
         }
+
+        // Reverte a transação antiga
+        if ("Entrada".equalsIgnoreCase(catAntiga.getTipo())) {
+            contaAntiga.setSaldoInicial(contaAntiga.getSaldoInicial() - antiga.getValor());
+        } else {
+            contaAntiga.setSaldoInicial(contaAntiga.getSaldoInicial() + antiga.getValor());
+        }
+        contaDao.atualizar(contaAntiga);
+
+        // Aplica a nova transação
+        if ("Entrada".equalsIgnoreCase(catNova.getTipo())) {
+            contaNova.setSaldoInicial(contaNova.getSaldoInicial() + novaTrans.getValor());
+        } else {
+            contaNova.setSaldoInicial(contaNova.getSaldoInicial() - novaTrans.getValor());
+        }
+        contaDao.atualizar(contaNova);
+
+        transDao.atualizar(novaTrans);
     }
 }

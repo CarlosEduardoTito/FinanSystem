@@ -52,7 +52,7 @@ public class JanelaLogin extends JFrame {
         lblFinanSystem.setBounds(80, 11, 174, 38);
         getContentPane().add(lblFinanSystem);
         
-        lblSlogan = new JLabel("O melhor pro seu planejamento");
+        lblSlogan = new JLabel("O melhor pro seu futuro");
         lblSlogan.setHorizontalAlignment(SwingConstants.CENTER);
         lblSlogan.setBounds(64, 47, 209, 14);
         getContentPane().add(lblSlogan);

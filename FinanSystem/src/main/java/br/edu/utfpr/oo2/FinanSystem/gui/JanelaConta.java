@@ -35,7 +35,6 @@ public class JanelaConta extends JDialog {
         tabela = new JTable(modelo);
         JScrollPane scroll = new JScrollPane(tabela);
 
-        // Painel de botões com 5 botões agora
         JPanel botoes = new JPanel(new GridLayout(1, 5, 10, 0));
 
         JButton add = new JButton("Adicionar");

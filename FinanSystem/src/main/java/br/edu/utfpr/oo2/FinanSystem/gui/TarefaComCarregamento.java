@@ -14,7 +14,7 @@ public class TarefaComCarregamento {
     public static void executar(Frame owner, RunnableComExcecao tarefa, Runnable aoSucesso, Consumer<Exception> aoErro) {
         JanelaCarregamento dialog = new JanelaCarregamento(owner);
 
-        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {   // ✅ CORRIGIDO
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             private Exception erro = null;
 
             @Override
@@ -59,7 +59,7 @@ public class TarefaComCarregamento {
     public static <T> void executarComRetorno(Frame owner, Callable<T> tarefa, Consumer<T> aoSucesso, Consumer<Exception> aoErro) {
         JanelaCarregamento dialog = new JanelaCarregamento(owner);
 
-        SwingWorker<T, Void> worker = new SwingWorker<T, Void>() {   // ✅ CORRIGIDO
+        SwingWorker<T, Void> worker = new SwingWorker<T, Void>() {
             private Exception erro = null;
 
             @Override

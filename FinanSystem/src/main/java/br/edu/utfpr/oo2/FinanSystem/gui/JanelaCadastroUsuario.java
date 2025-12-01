@@ -159,7 +159,7 @@ public class JanelaCadastroUsuario extends JDialog {
 
     private void confirmarUsuario() {
         try {
-            // Validação de campos vazios
+            
             String nomeCompleto = txtNomeCompleto.getText().trim();
             if (nomeCompleto.isEmpty()) {
                 throw new Exception("O campo 'Nome completo' é obrigatório!");

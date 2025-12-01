@@ -17,7 +17,7 @@ public class JanelaCarregamento extends JDialog {
         setLayout(null);
         getContentPane().setBackground(new Color(240, 240, 240));
         setResizable(false);
-        setUndecorated(true); // opcional - fica mais bonito
+        setUndecorated(true);
 
         getRootPane().setBorder(new LineBorder(new Color(50, 50, 50), 3));
 

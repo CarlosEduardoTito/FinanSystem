@@ -55,11 +55,8 @@ public class JanelaTransacao extends JDialog {
         btnFechar.addActionListener(e -> dispose());
     }
 
-
-    //     CARREGAR TABELA
-
     private void carregarTabela() {
-        //  Chamando a tela de carregamento
+
         TarefaComCarregamento.executar(
                 (Frame) getOwner(),
                 () -> {
@@ -82,9 +79,6 @@ public class JanelaTransacao extends JDialog {
         );
     }
 
-
-    //     ADICIONAR
-
     private void adicionar() {
 
         try {
@@ -97,7 +91,6 @@ public class JanelaTransacao extends JDialog {
 
             Transacao nova = new Transacao(contaId, categoriaId, descricao, valor, data);
 
-            // 👉 Com tela de carregamento
             TarefaComCarregamento.executar(
                     (Frame) getOwner(),
                     () -> service.cadastrarTransacao(nova),
@@ -112,15 +105,11 @@ public class JanelaTransacao extends JDialog {
         }
     }
 
-
-    //     EDITAR
-
     private void editar() {
 
         try {
             int id = Integer.parseInt(JOptionPane.showInputDialog(this, "ID da Transação:"));
 
-            //  Carrega transação com tela de carregamento e retorno
             TarefaComCarregamento.executarComRetorno(
                     (Frame) getOwner(),
                     () -> service.buscarPorId(id),
@@ -141,7 +130,6 @@ public class JanelaTransacao extends JDialog {
 
                             Transacao nova = new Transacao(id, contaId, categoriaId, descricao, valor, data);
 
-                            //  Atualização usando tela de carregamento
                             TarefaComCarregamento.executar(
                                     (Frame) getOwner(),
                                     () -> service.atualizarTransacao(nova),
@@ -163,9 +151,6 @@ public class JanelaTransacao extends JDialog {
         }
     }
 
-
-    //     EXCLUIR
-
     private void excluir() {
 
         try {
@@ -178,7 +163,6 @@ public class JanelaTransacao extends JDialog {
 
             if (r != JOptionPane.YES_OPTION) return;
 
-            //  Exclusão com tela de carregamento
             TarefaComCarregamento.executar(
                     (Frame) getOwner(),
                     () -> service.excluirTransacao(id),

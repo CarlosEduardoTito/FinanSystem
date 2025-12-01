@@ -209,6 +209,9 @@ public class JanelaCadastroUsuario extends JDialog {
                         TelaInicialFinanceiro telaInicialFinanceiro = new TelaInicialFinanceiro(usuario);
                         telaInicialFinanceiro.setVisible(true);
 
+                        if (getOwner() != null) {
+                            getOwner().dispose();
+                        }
                         dispose();
                     },
                     ex -> {

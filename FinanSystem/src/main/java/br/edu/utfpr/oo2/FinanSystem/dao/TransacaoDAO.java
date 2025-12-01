@@ -14,7 +14,6 @@ public class TransacaoDAO implements DAO<Transacao, Integer> {
         this.conn = conn;
     }
 
-    // Mapea o ResultSet para um objeto Transacao
     private Transacao mapearTransacao(ResultSet rs) throws SQLException {
         Transacao t = new Transacao();
         t.setId(rs.getInt("id"));

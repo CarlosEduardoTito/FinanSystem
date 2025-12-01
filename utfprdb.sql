@@ -31,7 +31,7 @@ CREATE TABLE `usuario` (
   UNIQUE KEY `uk_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- TABELA CONTA (AGORA COM userId)
+-- TABELA CONTA (COM userId)
 CREATE TABLE `conta` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `userId` INT(11) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `categoria` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- TABELA TRANSACAO
+-- TABELA TRANSACAO (ajustada para idConta/idCategoria)
 CREATE TABLE `transacao` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `idConta` INT(11) NOT NULL,

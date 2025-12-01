@@ -23,7 +23,6 @@ public class Usuario {
         this.senha = senha;
     }
 
-    // Construtor sem id, para novos cadastros
     public Usuario(String nomeCompleto, LocalDate dataNascimento,
                    String sexo, String nomeUsuario, String senha) {
         this(null, nomeCompleto, dataNascimento, sexo, nomeUsuario, senha);

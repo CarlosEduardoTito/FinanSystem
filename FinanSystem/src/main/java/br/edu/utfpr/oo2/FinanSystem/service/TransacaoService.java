@@ -154,7 +154,6 @@ public class TransacaoService {
             throw new Exception("Dados para atualização inválidos.");
         }
 
-        // Reverte a transação antiga
         if ("Entrada".equalsIgnoreCase(catAntiga.getTipo())) {
             contaAntiga.setSaldoInicial(contaAntiga.getSaldoInicial() - antiga.getValor());
         } else {
@@ -162,7 +161,6 @@ public class TransacaoService {
         }
         contaDao.atualizar(contaAntiga);
 
-        // Aplica a nova transação
         if ("Entrada".equalsIgnoreCase(catNova.getTipo())) {
             contaNova.setSaldoInicial(contaNova.getSaldoInicial() + novaTrans.getValor());
         } else {

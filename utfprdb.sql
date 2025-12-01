@@ -31,6 +31,10 @@ CREATE TABLE `usuario` (
   UNIQUE KEY `uk_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- USUÁRIO ADMIN PARA TESTES E APRESENTAÇÃO
+INSERT INTO `usuario` (`nome_completo`, `data_nascimento`, `sexo`, `username`, `senha`)
+VALUES ('Administrador', '2000-01-01', 'M', 'admin', '12345');
+
 -- TABELA CONTA (COM userId)
 CREATE TABLE `conta` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
